@@ -1,0 +1,74 @@
+# -*- after-save-hook: org-latex-export-to-pdf; -*-
+#+options: date:nil
+#+language: bt-br
+#+latex_header: \usepackage[a4paper, margin=2cm]{geometry}
+#+latex_header: \usepackage{indentfirst}
+#+latex_header: \usepackage[]{babel}
+#+latex_header: \usepackage{float}
+#+latex_header: \usepackage{color, colortbl}
+#+latex_header: \usepackage{titling}
+#+latex_header: \setlength{\droptitle}{-1.5cm}
+#+latex_header: \hypersetup{ colorlinks = true, urlcolor = blue }
+#+latex_header: \definecolor{beige}{rgb}{0.93,0.93,0.82}
+#+latex_header: \definecolor{brown}{rgb}{0.4,0.2,0.0}
+
+* Memória virtual - Desempenho (aula 27/05)
+*** Otimização
+   Se encher a memória, é necessária uma política de reposição de páginas. A página só é
+   escrita no disco caso já se tenha escrito nele.
+
+*** Frames
+  - Frame: página física
+  - Page: página virtual
+
+  Lugares na memória principal onde colocar as pages.
+
+  Dado uma sequênca de acessos, como o algoritmo se comporta?
+  1. Aleatoriamente;
+  2. Monitoração de execução de programas reais
+
+*** FIFO
+   Retira-se a página que está a mais tempo na memória. Anomalia de *belady*.
+
+** Fifo e segunda chance
+    3. Segunda chance: FIFO modificado. Se o bit de referência for 0, remova-a. Se for 1,
+       dê uma segunda chance. Fácil de implementar, degenera se todos os bits estiverem
+       setados. Percorre a lista de todas, não pega a mais recente. Estão todos setados
+       caso a memória esteja com muita demanda.
+    4. Segunda chance ao segunda chance: páginas na ordem de 1 a 4. De sem ref e limpa a
+       com ref e suja.
+
+*** Política ótima
+   Não factível! Pode ser aproximada. Número de page faults é menor.
+
+*** LRU
+   Remove a página que foi usada há mais tempo. Implementação complicada, pois tem que
+   guardar cada posição de memória e seu tempo! Não sofre da anomalia de Belady!
+**** Aproximações
+    1. *LRU:* Basta inicializar o bit de referência com 0 e deixar o hardware colocá-lo em 1 quando
+       a página for acessada. E quando todas as páginas tiverem sido referenciadas?
+    2. *LRU:* mais bits de referência: Guardar o número de bits em um byte. SHR e &. A página com o menor valor do byte
+       de referência deve ser removida.
+
+
+*** LFU e MFU = implementações caras.
+
+** Modelo de working set
+   Janela de trabalho é uma medida de localidade. $\Delta$ é seu tamanho. É a medida das
+   últimas delta references a páginas da memória.
+
+   O tamanho médio da janela é o número de frames a serem alocados por processo.
+
+*** Como definir $\Delta$?
+    Monitoração de um conjunto de programas.
+
+    1. Formalmente Não permite a utilização de mais que /n/ frames.
+    2. *Informalmente* (melhor jeito) Assume-se que o processo vai usar /n/ frames, mas não se garante.
+       Serve para ter uma ideia de quantos processos o sistema consegue tratar de forma eficiente.
+
+** Thrasing
+   Solução para o caso de haverem mais processos.
+
+   Número de page faults aumenta consideravelmente. Quando o pc para e não responde mais
+   (gasta-se mais tempo decidindo o que fazer, do que fazendo algo). *Ex:* ineficência de
+   plugins de navegadores.

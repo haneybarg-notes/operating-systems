@@ -1,0 +1,125 @@
+% Created 2019-05-27 Mon 18:08
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[a4paper, margin=2cm]{geometry}
+\usepackage{indentfirst}
+\usepackage[, brazilian]{babel}
+\usepackage{float}
+\usepackage{color, colortbl}
+\usepackage{titling}
+\setlength{\droptitle}{-1.5cm}
+\hypersetup{ colorlinks = true, urlcolor = blue }
+\definecolor{beige}{rgb}{0.93,0.93,0.82}
+\definecolor{brown}{rgb}{0.4,0.2,0.0}
+\date{}
+\title{}
+\hypersetup{
+ pdfauthor={},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.2 (Org mode 9.2)},
+ pdflang={Brazilian}}
+\begin{document}
+
+\tableofcontents
+
+
+\section{Memória virtual - Desempenho (aula 27/05)}
+\label{sec:orgf8a860c}
+\subsubsection{Otimização}
+\label{sec:org86e758c}
+Se encher a memória, é necessária uma política de reposição de páginas. A página só é
+escrita no disco caso já se tenha escrito nele.
+
+\subsubsection{Frames}
+\label{sec:orgcd24344}
+\begin{itemize}
+\item Frame: página física
+\item Page: página virtual
+\end{itemize}
+
+Lugares na memória principal onde colocar as pages.
+
+Dado uma sequênca de acessos, como o algoritmo se comporta?
+\begin{enumerate}
+\item Aleatoriamente;
+\item Monitoração de execução de programas reais
+\end{enumerate}
+
+\subsubsection{FIFO}
+\label{sec:org442e27b}
+Retira-se a página que está a mais tempo na memória. Anomalia de \textbf{belady}.
+
+\subsection{Fifo e segunda chance}
+\label{sec:orgc90cc91}
+\begin{enumerate}
+\item Segunda chance: FIFO modificado. Se o bit de referência for 0, remova-a. Se for 1,
+dê uma segunda chance. Fácil de implementar, degenera se todos os bits estiverem
+setados. Percorre a lista de todas, não pega a mais recente. Estão todos setados
+caso a memória esteja com muita demanda.
+\item Segunda chance ao segunda chance: páginas na ordem de 1 a 4. De sem ref e limpa a
+com ref e suja.
+\end{enumerate}
+
+\subsubsection{Política ótima}
+\label{sec:orge6106c5}
+Não factível! Pode ser aproximada. Número de page faults é menor.
+
+\subsubsection{LRU}
+\label{sec:orga23b587}
+Remove a página que foi usada há mais tempo. Implementação complicada, pois tem que
+guardar cada posição de memória e seu tempo! Não sofre da anomalia de Belady!
+\begin{enumerate}
+\item Aproximações
+\label{sec:org89ee822}
+\begin{enumerate}
+\item \textbf{LRU:} Basta inicializar o bit de referência com 0 e deixar o hardware colocá-lo em 1 quando
+a página for acessada. E quando todas as páginas tiverem sido referenciadas?
+\item \textbf{LRU:} mais bits de referência: Guardar o número de bits em um byte. SHR e \&. A página com o menor valor do byte
+de referência deve ser removida.
+\end{enumerate}
+\end{enumerate}
+
+
+\subsubsection{LFU e MFU = implementações caras.}
+\label{sec:org3d33f2a}
+
+\subsection{Modelo de working set}
+\label{sec:org107cd58}
+Janela de trabalho é uma medida de localidade. \(\Delta\) é seu tamanho. É a medida das
+últimas delta references a páginas da memória.
+
+O tamanho médio da janela é o número de frames a serem alocados por processo.
+
+\subsubsection{Como definir \(\Delta\)?}
+\label{sec:orgb17268a}
+Monitoração de um conjunto de programas.
+
+\begin{enumerate}
+\item Formalmente Não permite a utilização de mais que \emph{n} frames.
+\item \textbf{Informalmente} (melhor jeito) Assume-se que o processo vai usar \emph{n} frames, mas não se garante.
+Serve para ter uma ideia de quantos processos o sistema consegue tratar de forma eficiente.
+\end{enumerate}
+
+\subsection{Thrasing}
+\label{sec:org2b1a2fb}
+Solução para o caso de haverem mais processos.
+
+Número de page faults aumenta consideravelmente. Quando o pc para e não responde mais
+(gasta-se mais tempo decidindo o que fazer, do que fazendo algo). \textbf{Ex:} ineficência de
+plugins de navegadores.
+\end{document}
