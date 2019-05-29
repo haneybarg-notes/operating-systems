@@ -72,3 +72,46 @@
    Número de page faults aumenta consideravelmente. Quando o pc para e não responde mais
    (gasta-se mais tempo decidindo o que fazer, do que fazendo algo). *Ex:* ineficência de
    plugins de navegadores.
+* Memória virtual - Linux (aula 29/05)
+  Compartilhamento de memória permite um ganho significativo no desempenho.
+
+  No Linux podemos identificar compartilhamento de memória:
+   - Entre buffers de bloco e página;
+   - Entre páginas através de copy-on-write;
+   - Entre subrotinas sendo executadas.
+  Foco na memória principal.
+
+** Entre buffers
+*** Buddy heap
+   Páginas são agrupadas em blocos de dois por listas encadeadas.
+*** Contadores de referência
+   Usados para saber se alguma página já foi usada e pode ser liberada ou se ainda existe
+   alguém que precise dela.
+
+   Inicia-se com c=0. Quando cria-se uma página, c$++$; quando é destruída, c$--$.
+
+   Simples e eficiente.
+
+** Entre páginas
+*** Diversos sabores de páginas
+   - Sem pistolão: zero filled (primeiro acesso retorna página vazia).
+   - Com pistolão: backed (acessos à página retornam páginas de arquivo padrinho).
+
+   - Private: acesso por único processo.
+   - Shared: acesso por vários processos.
+
+*** Fork
+   Copia todas as páginas na memória para a nova tarefa. Ineficiente e problemas de
+   acesso.
+
+**** Copy-on-write (quase máximo compartilhamento)
+    Compartilha a página somente na leitura.
+
+** Subrotinas
+
+*** a.out
+    Código todo é linkado automaticamente.
+
+*** ELF (mais moderno)
+    Linkado dinamicamente (carrega subrotinas sob demanda). *Shared libs:* se a subrotina
+ estiver na memória, o SO não carrega outra cópia.

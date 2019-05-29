@@ -1,4 +1,4 @@
-% Created 2019-05-27 Mon 18:08
+% Created 2019-05-29 Wed 17:49
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -39,14 +39,14 @@
 
 
 \section{Memória virtual - Desempenho (aula 27/05)}
-\label{sec:orgf8a860c}
+\label{sec:org8b7f493}
 \subsubsection{Otimização}
-\label{sec:org86e758c}
+\label{sec:org5a4958a}
 Se encher a memória, é necessária uma política de reposição de páginas. A página só é
 escrita no disco caso já se tenha escrito nele.
 
 \subsubsection{Frames}
-\label{sec:orgcd24344}
+\label{sec:org2bcfb85}
 \begin{itemize}
 \item Frame: página física
 \item Page: página virtual
@@ -61,11 +61,11 @@ Dado uma sequênca de acessos, como o algoritmo se comporta?
 \end{enumerate}
 
 \subsubsection{FIFO}
-\label{sec:org442e27b}
+\label{sec:org1cb9abf}
 Retira-se a página que está a mais tempo na memória. Anomalia de \textbf{belady}.
 
 \subsection{Fifo e segunda chance}
-\label{sec:orgc90cc91}
+\label{sec:orgdffce70}
 \begin{enumerate}
 \item Segunda chance: FIFO modificado. Se o bit de referência for 0, remova-a. Se for 1,
 dê uma segunda chance. Fácil de implementar, degenera se todos os bits estiverem
@@ -76,16 +76,16 @@ com ref e suja.
 \end{enumerate}
 
 \subsubsection{Política ótima}
-\label{sec:orge6106c5}
+\label{sec:org706c393}
 Não factível! Pode ser aproximada. Número de page faults é menor.
 
 \subsubsection{LRU}
-\label{sec:orga23b587}
+\label{sec:org20c6884}
 Remove a página que foi usada há mais tempo. Implementação complicada, pois tem que
 guardar cada posição de memória e seu tempo! Não sofre da anomalia de Belady!
 \begin{enumerate}
 \item Aproximações
-\label{sec:org89ee822}
+\label{sec:org4f89146}
 \begin{enumerate}
 \item \textbf{LRU:} Basta inicializar o bit de referência com 0 e deixar o hardware colocá-lo em 1 quando
 a página for acessada. E quando todas as páginas tiverem sido referenciadas?
@@ -96,17 +96,17 @@ de referência deve ser removida.
 
 
 \subsubsection{LFU e MFU = implementações caras.}
-\label{sec:org3d33f2a}
+\label{sec:orga53e4b3}
 
 \subsection{Modelo de working set}
-\label{sec:org107cd58}
+\label{sec:org873c0e3}
 Janela de trabalho é uma medida de localidade. \(\Delta\) é seu tamanho. É a medida das
 últimas delta references a páginas da memória.
 
 O tamanho médio da janela é o número de frames a serem alocados por processo.
 
 \subsubsection{Como definir \(\Delta\)?}
-\label{sec:orgb17268a}
+\label{sec:org54b0245}
 Monitoração de um conjunto de programas.
 
 \begin{enumerate}
@@ -116,10 +116,70 @@ Serve para ter uma ideia de quantos processos o sistema consegue tratar de forma
 \end{enumerate}
 
 \subsection{Thrasing}
-\label{sec:org2b1a2fb}
+\label{sec:org6fbeca8}
 Solução para o caso de haverem mais processos.
 
 Número de page faults aumenta consideravelmente. Quando o pc para e não responde mais
 (gasta-se mais tempo decidindo o que fazer, do que fazendo algo). \textbf{Ex:} ineficência de
 plugins de navegadores.
+\section{Memória virtual - Linux (aula 29/05)}
+\label{sec:orgcb1c4e9}
+Compartilhamento de memória permite um ganho significativo no desempenho.
+
+No Linux podemos identificar compartilhamento de memória:
+\begin{itemize}
+\item Entre buffers de bloco e página;
+\item Entre páginas através de copy-on-write;
+\item Entre subrotinas sendo executadas.
+\end{itemize}
+Foco na memória principal.
+
+\subsection{Entre buffers}
+\label{sec:org8cf317a}
+\subsubsection{Buddy heap}
+\label{sec:orga90c78b}
+Páginas são agrupadas em blocos de dois por listas encadeadas.
+\subsubsection{Contadores de referência}
+\label{sec:org2e53853}
+Usados para saber se alguma página já foi usada e pode ser liberada ou se ainda existe
+alguém que precise dela.
+
+Inicia-se com c=0. Quando cria-se uma página, c\(++\); quando é destruída, c\(--\).
+
+Simples e eficiente.
+
+\subsection{Entre páginas}
+\label{sec:orgf06805e}
+\subsubsection{Diversos sabores de páginas}
+\label{sec:orgfcfc667}
+\begin{itemize}
+\item Sem pistolão: zero filled (primeiro acesso retorna página vazia).
+\item Com pistolão: backed (acessos à página retornam páginas de arquivo padrinho).
+
+\item Private: acesso por único processo.
+\item Shared: acesso por vários processos.
+\end{itemize}
+
+\subsubsection{Fork}
+\label{sec:org58d480d}
+Copia todas as páginas na memória para a nova tarefa. Ineficiente e problemas de
+acesso.
+
+\begin{enumerate}
+\item Copy-on-write (quase máximo compartilhamento)
+\label{sec:org5ae6354}
+Compartilha a página somente na leitura.
+\end{enumerate}
+
+\subsection{Subrotinas}
+\label{sec:org18eec0c}
+
+\subsubsection{a.out}
+\label{sec:orgd5bf3dd}
+Código todo é linkado automaticamente.
+
+\subsubsection{ELF (mais moderno)}
+\label{sec:orga426256}
+   Linkado dinamicamente (carrega subrotinas sob demanda). \textbf{Shared libs:} se a subrotina
+estiver na memória, o SO não carrega outra cópia.
 \end{document}
