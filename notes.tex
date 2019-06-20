@@ -1,4 +1,4 @@
-% Created 2019-05-29 Wed 17:49
+% Created 2019-06-10 Mon 17:14
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -39,14 +39,14 @@
 
 
 \section{Memória virtual - Desempenho (aula 27/05)}
-\label{sec:org8b7f493}
+\label{sec:org7739ce3}
 \subsubsection{Otimização}
-\label{sec:org5a4958a}
+\label{sec:orgd45a618}
 Se encher a memória, é necessária uma política de reposição de páginas. A página só é
 escrita no disco caso já se tenha escrito nele.
 
 \subsubsection{Frames}
-\label{sec:org2bcfb85}
+\label{sec:org5de2f79}
 \begin{itemize}
 \item Frame: página física
 \item Page: página virtual
@@ -61,11 +61,11 @@ Dado uma sequênca de acessos, como o algoritmo se comporta?
 \end{enumerate}
 
 \subsubsection{FIFO}
-\label{sec:org1cb9abf}
+\label{sec:org2dec41c}
 Retira-se a página que está a mais tempo na memória. Anomalia de \textbf{belady}.
 
 \subsection{Fifo e segunda chance}
-\label{sec:orgdffce70}
+\label{sec:orgfcc7100}
 \begin{enumerate}
 \item Segunda chance: FIFO modificado. Se o bit de referência for 0, remova-a. Se for 1,
 dê uma segunda chance. Fácil de implementar, degenera se todos os bits estiverem
@@ -76,16 +76,16 @@ com ref e suja.
 \end{enumerate}
 
 \subsubsection{Política ótima}
-\label{sec:org706c393}
+\label{sec:orgf8878e6}
 Não factível! Pode ser aproximada. Número de page faults é menor.
 
 \subsubsection{LRU}
-\label{sec:org20c6884}
+\label{sec:org3510b92}
 Remove a página que foi usada há mais tempo. Implementação complicada, pois tem que
 guardar cada posição de memória e seu tempo! Não sofre da anomalia de Belady!
 \begin{enumerate}
 \item Aproximações
-\label{sec:org4f89146}
+\label{sec:org7e7cf92}
 \begin{enumerate}
 \item \textbf{LRU:} Basta inicializar o bit de referência com 0 e deixar o hardware colocá-lo em 1 quando
 a página for acessada. E quando todas as páginas tiverem sido referenciadas?
@@ -96,17 +96,17 @@ de referência deve ser removida.
 
 
 \subsubsection{LFU e MFU = implementações caras.}
-\label{sec:orga53e4b3}
+\label{sec:orgc0a8c6b}
 
 \subsection{Modelo de working set}
-\label{sec:org873c0e3}
+\label{sec:orgba59e4c}
 Janela de trabalho é uma medida de localidade. \(\Delta\) é seu tamanho. É a medida das
 últimas delta references a páginas da memória.
 
 O tamanho médio da janela é o número de frames a serem alocados por processo.
 
 \subsubsection{Como definir \(\Delta\)?}
-\label{sec:org54b0245}
+\label{sec:org62bf2ad}
 Monitoração de um conjunto de programas.
 
 \begin{enumerate}
@@ -116,14 +116,14 @@ Serve para ter uma ideia de quantos processos o sistema consegue tratar de forma
 \end{enumerate}
 
 \subsection{Thrasing}
-\label{sec:org6fbeca8}
+\label{sec:org9517248}
 Solução para o caso de haverem mais processos.
 
 Número de page faults aumenta consideravelmente. Quando o pc para e não responde mais
 (gasta-se mais tempo decidindo o que fazer, do que fazendo algo). \textbf{Ex:} ineficência de
 plugins de navegadores.
 \section{Memória virtual - Linux (aula 29/05)}
-\label{sec:orgcb1c4e9}
+\label{sec:orgfcc4a05}
 Compartilhamento de memória permite um ganho significativo no desempenho.
 
 No Linux podemos identificar compartilhamento de memória:
@@ -135,12 +135,12 @@ No Linux podemos identificar compartilhamento de memória:
 Foco na memória principal.
 
 \subsection{Entre buffers}
-\label{sec:org8cf317a}
+\label{sec:org97e474e}
 \subsubsection{Buddy heap}
-\label{sec:orga90c78b}
+\label{sec:org6a7b583}
 Páginas são agrupadas em blocos de dois por listas encadeadas.
 \subsubsection{Contadores de referência}
-\label{sec:org2e53853}
+\label{sec:orga698623}
 Usados para saber se alguma página já foi usada e pode ser liberada ou se ainda existe
 alguém que precise dela.
 
@@ -149,9 +149,9 @@ Inicia-se com c=0. Quando cria-se uma página, c\(++\); quando é destruída, c\
 Simples e eficiente.
 
 \subsection{Entre páginas}
-\label{sec:orgf06805e}
+\label{sec:org1fbc7ff}
 \subsubsection{Diversos sabores de páginas}
-\label{sec:orgfcfc667}
+\label{sec:orga602381}
 \begin{itemize}
 \item Sem pistolão: zero filled (primeiro acesso retorna página vazia).
 \item Com pistolão: backed (acessos à página retornam páginas de arquivo padrinho).
@@ -161,25 +161,219 @@ Simples e eficiente.
 \end{itemize}
 
 \subsubsection{Fork}
-\label{sec:org58d480d}
+\label{sec:orgb2b57ec}
 Copia todas as páginas na memória para a nova tarefa. Ineficiente e problemas de
 acesso.
 
 \begin{enumerate}
 \item Copy-on-write (quase máximo compartilhamento)
-\label{sec:org5ae6354}
+\label{sec:org142982e}
 Compartilha a página somente na leitura.
 \end{enumerate}
 
 \subsection{Subrotinas}
-\label{sec:org18eec0c}
+\label{sec:org67c1a49}
 
 \subsubsection{a.out}
-\label{sec:orgd5bf3dd}
+\label{sec:org1008bb4}
 Código todo é linkado automaticamente.
 
 \subsubsection{ELF (mais moderno)}
-\label{sec:orga426256}
+\label{sec:org467f139}
    Linkado dinamicamente (carrega subrotinas sob demanda). \textbf{Shared libs:} se a subrotina
 estiver na memória, o SO não carrega outra cópia.
+\section{Arquivos (aula 03/06)}
+\label{sec:orgbc7f722}
+\subsection{Definição}
+\label{sec:org18e933e}
+Conjunto de dados normalmente não voláteis; menor unidade de informação secundária.
+Qualquer dado não-volátil tem que ser guardado em arquivos.
+\subsection{Definido por}
+\label{sec:orged7baef}
+\begin{itemize}
+\item Nome
+\item Tipo
+\item Lugar
+\item Tamanho
+\item Permissões
+\item Tempos
+\end{itemize}
+\subsection{O que mais além de arquivos?}
+\label{sec:org3a7edc9}
+\begin{itemize}
+\item Diretórios: coleção de arquivos.
+\item Partições: pedaços de memória secundária
+\end{itemize}
+\subsection{Operações com arquivos}
+\label{sec:orgbbc4828}
+Criar, ler, mover, reposicionar(bem útil), truncar (cortar de um ponto para frente), apagar.
+\subsection{Abir/fechar}
+\label{sec:org3553f0d}
+Não é essencial, apenas uma otimização através de buffers na memória
+principal. Consegue-se fazer leitura sem abrir o arquivo.
+\subsubsection{Problemas}
+\label{sec:orge83d8d4}
+\begin{itemize}
+\item Esquecer de fechar (memory leak)
+\item Acessos concorrentes
+\end{itemize}
+\subsubsection{Tomar cuidado com}
+\label{sec:orgf44a715}
+\begin{itemize}
+\item Localização no disco (pode estar mudando)
+\item Reference count pra ter certeza de que ninguém vai apagar coisas que não estão sendo
+usadas.
+\end{itemize}
+\subsection{Métodos de acesso}
+\label{sec:org025284f}
+\begin{itemize}
+\item Sequencial: ler, escrever e rebobinar (originado de fita). Ex: pdf, áudio, zip, tar,
+.o.
+\item Direto: ler, escrever, reposicionar (seek) - originado de disco. Ex: banco de dados,
+binário, libraries, ávores B.
+\end{itemize}
+\subsection{Diretórios}
+\label{sec:orgfaf4081}
+Estrutura é um DAG (grafo acíclico direcionado)
+\begin{itemize}
+\item Cria arquivo
+\item Apaga
+\item Busca
+\item Lista conteúdo
+\end{itemize}
+
+Não é muito diferente de arquivos. Symlink(shortcut) e hard link().
+
+Append só serve para log.
+\section{Arquivos - Implementação (aula 03/06)}
+\label{sec:org6deddee}
+\subsection{Alocação de espaço em disco}
+\label{sec:orgbc43606}
+\subsubsection{Alocação contígua}
+\label{sec:org53eccab}
+Fácil implementação e rápido acesso. Não é muito usado.
+\subsubsection{Encadeadas}
+\label{sec:org7d7b71e}
+Ex: sistema pick - lista duplamente encadeada (só banco de dados).
+\begin{itemize}
+\item Sem fragmentação, simples de aumentar, criar e apagar. Aproveita o máximo o disco.
+\item Ruim para acesso sequencial. Se um link se perder, perde-se o arquivo todo (corrompe
+a informação).
+
+Não é muito usado.
+\end{itemize}
+\begin{enumerate}
+\item FAT
+\label{sec:org73ef5fe}
+Diminui os erros, menos eficiente.
+\end{enumerate}
+\subsubsection{Indexada}
+\label{sec:orgcceec03}
+Uma fat para todos os arquivos; um índice por arquivo. Não importa a eficiência.
+\begin{itemize}
+\item Tem que usar um índice, mesmo que o arquivo use um bloco só.
+\item Tamanho ideal é um bloco de disco.
+Solução: unix \emph{inode}.
+\end{itemize}
+\section{Sistemas de E/S (aula 05/06)}
+\label{sec:orgd608111}
+\begin{itemize}
+\item mouse é lento
+\item discos e impressora rápidos
+\item trânsito de dados complexo, velocidade difernetes: E/S complexos
+\item Sistema embutido é mais simples.
+\item Sistemas embutidos são usados em robôs, máquinas, controladores de aeronaves.
+\end{itemize}
+\subsection{Tipos de dispositivos e/s}
+\label{sec:orgabd139c}
+Só há duas classificações:
+\subsubsection{Bloco}
+\label{sec:org7c1daa6}
+\begin{itemize}
+\item podem ler escrever em qualquer bloco
+\item ex: discos
+\end{itemize}
+\subsubsection{Caracteres}
+\label{sec:org32c8e9a}
+\begin{itemize}
+\item dados são sequência de caracteres
+\item não tem seek
+\item ex: termiais, impressoras, mice, clock, video, fitas.
+\end{itemize}
+
+\subsection{Componentes de um dispositivo}
+\label{sec:org05b80ee}
+\begin{itemize}
+\item Dispositivo
+\item Controlador
+\end{itemize}
+\subsubsection{Software que controla (device driver)}
+\label{sec:org6be19fc}
+Nem sempre funciona: \(ioctl()\)
+
+\subsection{Processador}
+\label{sec:org1da4b15}
+É feito um mapeamento do processador para os registradores:
+\begin{itemize}
+\item através de comandos especiais de leituras de portas;
+\item através de mapeamento de memória (mais usado, porém pode levar a erros). Ex associar
+um endereço ao disco rígido;
+\end{itemize}
+
+\subsection{Modo de acesso}
+\label{sec:orgc9ed678}
+Usa-se todos, não consegue-se usar DMA para todos (restrito). Usa-se as interrupções
+rapidamente, aí tem que usar polling.
+\subsubsection{Polling}
+\label{sec:org6adf8bc}
+Handshake: fica esperando o resultado chegar (já chegou? já chegou?). Espera ocupada.
+\subsubsection{Interrupções}
+\label{sec:org9a7dfe0}
+Sem espera ocupada. Cpu programa E/S. Quando os dados ficam prontos, o cpu dá um jump
+(interrupção) e dados são lidos.
+\subsubsection{DMA (método mais eficiente)}
+\label{sec:org0ddaeb0}
+Métodos anteriores possuem transferência de poucos bytes por vez.  Vc tem um
+controlador ligado ao barramento. Está executando um programa, aloca um buffer e manda
+uma msg pro DMA. DMA guarda as palavras no buffer e gera apenas uma interrupção para
+voltar. Copia um bloco inteiro por vez.
+
+\subsection{Software}
+\label{sec:org7eb6451}
+Objetivo: ser independente do dispositivo.
+
+Interface única. Tratado como arquivo.
+
+
+\begin{itemize}
+\item Blocante ou assíncrono (em geral é)
+\item Não blocante
+\end{itemize}
+
+
+Programas são síncronos.
+
+\begin{itemize}
+\item Compartilhar (ex: discos)
+\item Não compartilhar (ex: impressoras)
+\end{itemize}
+\section{Segurança (aula 10/06)}
+\label{sec:org3928316}
+\subsection{Razões de perda de dados}
+\label{sec:org3d4b63d}
+\begin{itemize}
+\item Catástrofe naturais
+\item Erros de hw/sw
+\item Erros humanos
+\item Erros bizantinos (invasores)
+\end{itemize}
+
+\subsection{Invasores}
+\label{sec:orgfe4e4dc}
+\begin{itemize}
+\item Passivos: leitura
+\item Ativos: modificação
+\item Ex: casuais, internos (pertence à organização), externos (), determinados, hackers, ladrões, espionagem, violação
+de privacidade.
+\end{itemize}
 \end{document}

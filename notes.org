@@ -115,3 +115,130 @@
 *** ELF (mais moderno)
     Linkado dinamicamente (carrega subrotinas sob demanda). *Shared libs:* se a subrotina
  estiver na memória, o SO não carrega outra cópia.
+* Arquivos (aula 03/06)
+** Definição
+   Conjunto de dados normalmente não voláteis; menor unidade de informação secundária.
+   Qualquer dado não-volátil tem que ser guardado em arquivos.
+** Definido por
+   - Nome
+   - Tipo
+   - Lugar
+   - Tamanho
+   - Permissões
+   - Tempos
+** O que mais além de arquivos?
+   - Diretórios: coleção de arquivos.
+   - Partições: pedaços de memória secundária
+** Operações com arquivos
+   Criar, ler, mover, reposicionar(bem útil), truncar (cortar de um ponto para frente), apagar.
+** Abir/fechar
+   Não é essencial, apenas uma otimização através de buffers na memória
+   principal. Consegue-se fazer leitura sem abrir o arquivo.
+*** Problemas
+    - Esquecer de fechar (memory leak)
+    - Acessos concorrentes
+*** Tomar cuidado com
+    - Localização no disco (pode estar mudando)
+    - Reference count pra ter certeza de que ninguém vai apagar coisas que não estão sendo
+      usadas.
+** Métodos de acesso
+   - Sequencial: ler, escrever e rebobinar (originado de fita). Ex: pdf, áudio, zip, tar,
+     .o.
+   - Direto: ler, escrever, reposicionar (seek) - originado de disco. Ex: banco de dados,
+     binário, libraries, ávores B.
+** Diretórios
+   Estrutura é um DAG (grafo acíclico direcionado)
+   - Cria arquivo
+   - Apaga
+   - Busca
+   - Lista conteúdo
+
+   Não é muito diferente de arquivos. Symlink(shortcut) e hard link().
+
+   Append só serve para log.
+* Arquivos - Implementação (aula 03/06)
+** Alocação de espaço em disco
+*** Alocação contígua
+    Fácil implementação e rápido acesso. Não é muito usado.
+*** Encadeadas
+    Ex: sistema pick - lista duplamente encadeada (só banco de dados).
+    - Sem fragmentação, simples de aumentar, criar e apagar. Aproveita o máximo o disco.
+    - Ruim para acesso sequencial. Se um link se perder, perde-se o arquivo todo (corrompe
+      a informação).
+
+      Não é muito usado.
+**** FAT
+     Diminui os erros, menos eficiente.
+*** Indexada
+    Uma fat para todos os arquivos; um índice por arquivo. Não importa a eficiência.
+    - Tem que usar um índice, mesmo que o arquivo use um bloco só.
+    - Tamanho ideal é um bloco de disco.
+      Solução: unix /inode/.
+* Sistemas de E/S (aula 05/06)
+  - mouse é lento
+  - discos e impressora rápidos
+  - trânsito de dados complexo, velocidade difernetes: E/S complexos
+  - Sistema embutido é mais simples.
+  - Sistemas embutidos são usados em robôs, máquinas, controladores de aeronaves.
+** Tipos de dispositivos e/s
+   Só há duas classificações:
+*** Bloco
+    - podem ler escrever em qualquer bloco
+    - ex: discos
+*** Caracteres
+    - dados são sequência de caracteres
+    - não tem seek
+    - ex: termiais, impressoras, mice, clock, video, fitas.
+
+** Componentes de um dispositivo
+   - Dispositivo
+   - Controlador
+*** Software que controla (device driver)
+    Nem sempre funciona: $ioctl()$
+
+** Processador
+   É feito um mapeamento do processador para os registradores:
+   - através de comandos especiais de leituras de portas;
+   - através de mapeamento de memória (mais usado, porém pode levar a erros). Ex associar
+     um endereço ao disco rígido;
+
+** Modo de acesso
+   Usa-se todos, não consegue-se usar DMA para todos (restrito). Usa-se as interrupções
+   rapidamente, aí tem que usar polling.
+*** Polling
+    Handshake: fica esperando o resultado chegar (já chegou? já chegou?). Espera ocupada.
+*** Interrupções
+    Sem espera ocupada. Cpu programa E/S. Quando os dados ficam prontos, o cpu dá um jump
+    (interrupção) e dados são lidos.
+*** DMA (método mais eficiente)
+    Métodos anteriores possuem transferência de poucos bytes por vez.  Vc tem um
+    controlador ligado ao barramento. Está executando um programa, aloca um buffer e manda
+    uma msg pro DMA. DMA guarda as palavras no buffer e gera apenas uma interrupção para
+    voltar. Copia um bloco inteiro por vez.
+
+** Software
+   Objetivo: ser independente do dispositivo.
+
+   Interface única. Tratado como arquivo.
+
+
+   - Blocante ou assíncrono (em geral é)
+   - Não blocante
+
+
+   Programas são síncronos.
+
+   - Compartilhar (ex: discos)
+   - Não compartilhar (ex: impressoras)
+* Segurança (aula 10/06)
+** Razões de perda de dados
+   - Catástrofe naturais
+   - Erros de hw/sw
+   - Erros humanos
+   - Erros bizantinos (invasores)
+
+** Invasores
+   - Passivos: leitura
+   - Ativos: modificação
+   - Ex: casuais, internos (pertence à organização), externos (), determinados, hackers, ladrões, espionagem, violação
+     de privacidade.
